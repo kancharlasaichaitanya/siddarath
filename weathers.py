@@ -69,3 +69,19 @@ if __name__ == "__main__":
     print(" Starting FastMCP weather server...")
     import asyncio
     asyncio.run(mcp.run())
+
+# Streamlit UI for weather alerts
+try:
+    import streamlit as st
+except ImportError:
+    st = None
+
+if st:
+    st.title("US Weather Alerts (NWS)")
+    state = st.text_input("Enter two-letter US state code (e.g., CA, NY):", max_chars=2)
+    if st.button("Get Alerts") and state:
+        import asyncio
+        with st.spinner("Fetching alerts..."):
+            alerts = asyncio.run(get_alerts(state.upper()))
+        st.text_area("Weather Alerts", alerts, height=400)
+    st.caption("Powered by weather.gov & FastMCP")
